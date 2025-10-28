@@ -2,7 +2,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import re
 
-with open("resources/Puzzle4.txt") as puzzle_input_file:
+with (open("resources/Puzzle4.txt") as puzzle_input_file):
     p = re.compile(r"(Departure|Arrival):\s+(\S+)\s+(.+)")
 
     matches = [(m.group(2), m.group(3)) for m in \
