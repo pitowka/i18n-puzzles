@@ -1,6 +1,9 @@
 import datetime
 from datetime import timedelta
-from zoneinfo import ZoneInfo
+from zoneinfo import *
+
+from more_itertools.more import first
+
 
 class AuditTrail:
     def __init__(self, trail: list[str]):
@@ -8,34 +11,18 @@ class AuditTrail:
         self.correctDuration = timedelta(minutes=int(trail[1]))
         self.wrongDuration = timedelta(minutes=int(trail[2]))
 
-    def __repr__(self):
-        return f"{__class__.__name__} {self.timeStamp} {self.correctDuration} {self.wrongDuration}"
-
     def correct(self):
-        print(
-            self.timeStamp.__str__() == self.timeStamp.astimezone(ZoneInfo("America/Halifax")).__str__(),
-            self.timeStamp.__str__() == self.timeStamp.astimezone(ZoneInfo("America/Santiago")).__str__()
-        )
-        return self.timeStamp - (self.wrongDuration + self.correctDuration)
+        tz_info = next(ts.tzinfo for ts in
+                  [self.timeStamp.astimezone(ZoneInfo("America/Halifax")), self.timeStamp.astimezone(ZoneInfo("America/Santiago"))]
+                  if ts.__str__() == self.timeStamp.__str__())
+
+        return (self.timeStamp - self.wrongDuration + self.correctDuration).astimezone(tz_info)
+
 
 with open("resources/Puzzle7.txt") as puzzle_input_file:
-    for split in [line.strip().split("\t") for line in puzzle_input_file]:
-        d = AuditTrail(split).correct()
-        # print(d,
-        #   d.astimezone(ZoneInfo("America/Halifax")),
-        #   d.astimezone(ZoneInfo("America/Halifax")).dst(),
-        #   d.astimezone(ZoneInfo("America/Santiago")),
-        #   d.astimezone(ZoneInfo("America/Santiago")).dst()
-        # )
+    hours = enumerate(
+        AuditTrail(split).correct().hour for split in
+        [line.strip().split("\t") for line in puzzle_input_file])
 
-
-
-
-# for d in [datetime.datetime.fromisoformat(d) for d in ["2012-11-05T09:39:00.000-04:00", "2012-05-27T17:38:00.000-04:00", "2008-03-23T05:02:00.000-03:00"]]:
-#     print(d,
-#           d.astimezone(ZoneInfo("America/Halifax")),
-#           d.astimezone(ZoneInfo("America/Halifax")).dst(),
-#           d.astimezone(ZoneInfo("America/Santiago")),
-#           d.astimezone(ZoneInfo("America/Santiago")).dst()
-#           )
+    print(sum((e[0] + 1) * e[1] for e in hours))
 
