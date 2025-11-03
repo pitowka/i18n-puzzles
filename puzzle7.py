@@ -2,9 +2,6 @@ import datetime
 from datetime import timedelta
 from zoneinfo import *
 
-from more_itertools.more import first
-
-
 class AuditTrail:
     def __init__(self, trail: list[str]):
         self.timeStamp = datetime.datetime.fromisoformat(trail[0])
