@@ -1,6 +1,5 @@
 import re
 
-
 class JapaneseNumber:
     def __init__(self, number):
         self.number = number
@@ -42,6 +41,7 @@ class JapaneseNumber:
     }
 
     def value_in_meters(self) -> int:
+
         return 10
 
 with open("resources/Puzzle14.txt") as puzzle_input_file:
@@ -56,9 +56,14 @@ with open("resources/Puzzle14.txt") as puzzle_input_file:
 print(JapaneseNumber('三百七十四万二千五百三十厘').value_in_meters())
 
 
-urob to na 2x
-najskor oddel units_of_length a potom x-krat zopakuj \d[a-z] like pattern
+# urob to na 2x
+# najskor oddel units_of_length a potom x-krat zopakuj \d[a-z] like pattern
 
-for x in re.finditer(r"((?:([一二三四五六七八九])+(十|百|千|万|十万|百万|千万|億)*)+)+?([尺丈町里毛厘分寸])", '三百七十四万二千五百三十厘'):
-    print(x.groups())
 
+# ((?:\d[a-z])+)([A-Z])
+for x in re.finditer(r"((?:[一二三四五六七八九](十|百|千|万|十万|百万|千万|億)*)+)([尺丈町里毛厘分寸])", '三百七十四万二千五百三十厘'):
+    print(x.groups()[0])
+
+# ((\d)([a-z]){0,1})
+for x in re.finditer(r"(([一二三四五六七八九])(十|百|千|万|十万|百万|千万|億)*)", '三百七十四万二千五百三十'):
+    print(x.groups()[0])
